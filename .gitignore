@@ -4,6 +4,7 @@ dataset/
 *.pt
 *.png
 env/
+notebook/
 grid_search/
 lightning_logs/
 .ipynb_checkpoints/
