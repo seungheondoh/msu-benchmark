@@ -89,14 +89,15 @@ def get_track_split(tracks, target):
     y_train = tracks.loc[target_subset & train, ('track', 'genre_top')]
     y_val = tracks.loc[target_subset & val, ('track', 'genre_top')]
     y_test = tracks.loc[target_subset & test, ('track', 'genre_top')]
+    df_genre_top = pd.concat([y_train, y_val, y_test])
     traget_track_split = {
         "train_track": list(y_train.index),
         "valid_track": list(y_val.index),
         "test_track": list(y_test.index),
     }
-    return traget_track_split
+    return traget_track_split, df_genre_top
 
-def get_annotation(tracks, fma_path):
+def get_annotation(tracks, df_genre_top, fma_path):
     track_target = ['genres_all', 'genre_top', 'title']
     album_target = ['date_released','title']
     artist_target = ['name']
@@ -106,17 +107,30 @@ def get_annotation(tracks, fma_path):
     df_album = df_album.rename(columns={"title": "release"})
     track_album = pd.merge(df_track, df_album, how='outer',on='track_id')
     df_fma = pd.merge(track_album, df_artist, how='outer',on='track_id')
-    df_fma['genre_top'] =  df_fma['genre_top'].map(lambda x: x.lower())
-    df_annotation = pd.DataFrame(index=df_fma.index, columns=['tag','title','year','release','artist_name'])
-    df_annotation['tag'] = df_fma['genre_top']
-    df_annotation['title'] = df_fma['title']
-    df_annotation['artist_name'] = df_fma['name']
-    df_annotation['release'] = df_fma['release']
-    df_annotation['year'] = df_fma['date_released'].map(lambda x: str(x.year))
-    df_annotation['track_id'] = df_annotation.index
-    df_annotation = df_annotation.dropna()
-    annotation_dict = df_annotation.to_dict('index')
+    df_genre_top =  df_genre_top.map(lambda x: x.lower())
+    annotation_dict = {}
+    for track_id in df_genre_top.index:
+        try:
+            annotation_dict[track_id] = {
+                "tag": str(df_genre_top.loc[track_id]),
+                "title": str(df_fma.loc[track_id]['title']),
+                "artist_name": str(df_fma.loc[track_id]['name']),
+                "release": str(df_fma.loc[track_id]['release']),
+                "year": str(df_fma.loc[track_id]['date_released'].year),
+                "track_id": track_id,
+            }
+        except:
+            annotation_dict[track_id] = {
+                "tag": str(df_genre_top.loc[track_id]),
+                "title": "",
+                "artist_name": "",
+                "release": "",
+                "year": "",
+                "track_id": track_id,
+            }
+    print(len(annotation_dict))
     _json_dump(os.path.join(fma_path, "annotation.json"), annotation_dict)
+    df_annotation = pd.DataFrame(annotation_dict).T
     return annotation_dict, df_annotation
 
 def get_tag_info(df_annotation, fma_path):
@@ -130,7 +144,7 @@ def get_tag_info(df_annotation, fma_path):
 def FMA_processor(fma_path):
     tracks = fma_load(os.path.join(fma_path,"fma_metadata/tracks.csv"))
     genres = fma_load(os.path.join(fma_path,"fma_metadata/genres.csv"))
-    small_track_split = get_track_split(tracks, "small")
+    small_track_split, df_genre_top = get_track_split(tracks, "small")
     total_track = small_track_split['train_track'] + small_track_split['valid_track']+ small_track_split['test_track']
     # pool = multiprocessing.Pool(multiprocessing.cpu_count())
     # pool.map(fma_resampler, total_track)
@@ -140,7 +154,7 @@ def FMA_processor(fma_path):
         error_samples.extend(os.listdir(os.path.join(error_dir, dirs)))
     error_fnames = [int(i.split(".npy")[0]) for i in error_samples]
     tracks = tracks.drop(error_fnames, axis=0)
-    annotation_dict, df_filter = get_annotation(tracks, fma_path)
+    annotation_dict, df_filter = get_annotation(tracks, df_genre_top, fma_path)
     get_tag_info(df_filter, fma_path)
     filtered_small = {
         "train_track": [track_id for track_id in small_track_split['train_track'] if track_id in annotation_dict.keys()],

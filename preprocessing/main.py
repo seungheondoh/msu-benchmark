@@ -10,13 +10,13 @@ from emotify_preprocessor import EMOTIFY_processor
 from constants import DATASET
 
 def main():
-    GTZAN_processor(gtzan_path=os.path.join(DATASET, 'gtzan'))
-    MTAT_processor(mtat_path=os.path.join(DATASET, 'mtat'))
-    # FMA_processor(fma_path=os.path.join(DATASET, 'fma'))
-    MTG_processor(mtg_path=os.path.join(DATASET, 'mtg'))
+    # GTZAN_processor(gtzan_path=os.path.join(DATASET, 'gtzan'))
+    # MTAT_processor(mtat_path=os.path.join(DATASET, 'mtat'))
+    FMA_processor(fma_path=os.path.join(DATASET, 'fma'))
+    # MTG_processor(mtg_path=os.path.join(DATASET, 'mtg'))
     # KVT_processor(kvt_path=os.path.join(DATASET, 'kvt'))
     # OPENMIC_processor(openmic_path=os.path.join(DATASET, 'openmic'))
-    EMOTIFY_processor(emotify_path=os.path.join(DATASET, 'emotify'))
+    # EMOTIFY_processor(emotify_path=os.path.join(DATASET, 'emotify'))
 
 if __name__ == '__main__':
     main()

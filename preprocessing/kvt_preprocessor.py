@@ -58,7 +58,7 @@ def get_annotation(X,Y, df_meta, kvt_path, artists):
                 "artist": translate_map[meta['artist']].lower(),
                 "title": meta['title']
             }
-    _json_dump(os.path.join(kvt_path, "annotaion.json"), annotation)
+    _json_dump(os.path.join(kvt_path, "annotation.json"), annotation)
     df_kvt = pd.DataFrame(annotation).T
     return df_kvt, annotation
 
