@@ -107,6 +107,6 @@ def MTG_processor(mtg_path):
     df_total = get_annotation(mtg_path)
     get_tag_split(df_total, mtg_path)
     mp3_path = list(df_total['path'])
-    # pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    # pool.map(jamendo_resampler, mp3_path)
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    pool.map(jamendo_resampler, mp3_path)
     print("finish jamendo extract", len(df_total))

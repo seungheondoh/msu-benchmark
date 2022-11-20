@@ -85,7 +85,7 @@ def GTZAN_processor(gtzan_path):
     _json_dump(os.path.join(gtzan_path, 'gtzan_tag_stats.json'), tag_stats)
     _json_dump(os.path.join(gtzan_path, 'gtzan_tag_info.json'), tag_info)
     
-    # with poolcontext(processes=multiprocessing.cpu_count()-5) as pool:
-    #     pool.starmap(gtzan_resampler, zip(list(gtzan_final['tag']), list(gtzan_final.index)))
+    with poolcontext(processes=multiprocessing.cpu_count()-5) as pool:
+        pool.starmap(gtzan_resampler, zip(list(gtzan_final['tag']), list(gtzan_final.index)))
 
     print("finish gtzan extract", len(track_list))
