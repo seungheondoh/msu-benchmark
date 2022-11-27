@@ -1,10 +1,57 @@
 # Music Semantic Understanding Benchmark
 
+<p align = "center">
+    <img src = "https://i.imgur.com/DE9tpFm.png">
+</p>
+
+It is a repository that shares dataset to create reproducible results for music semantic understanding. We propose a preprocessor for making `KV Style (key-values) annotation` file, `track split` file, and `resampler`. This will help the re-implementation of the research.
 
 ### Quick Start
 ```
 bash scripts/download_splits.sh
 ```
+
+### Example of annotation.json
+
+Magnatagatune
+```python
+{
+    "2": {
+        "track_id": "2",
+        "tag": [
+            "classical",
+            "strings",
+            "opera",
+            "violin"
+        ],
+        "extra_tag": [
+            "classical",
+            "strings",
+            "opera",
+            "violin"
+        ],
+        "title": "BWV54 - I Aria",
+        "artist_name": "American Bach Soloists",
+        "release": "J.S. Bach Solo Cantatas",
+        "path": "f/american_bach_soloists-j_s__bach_solo_cantatas-01-bwv54__i_aria-30-59.mp3"
+        }
+}
+```
+
+GTZAN
+```python
+{
+    "blues.00029.wav": {
+        "artist_name": "Kelly Joe Phelps",
+        "title": "The House Carpenter",
+        "key": "minor d",
+        "tempo": 126,
+        "tag": "blues",
+        "track_id": "blues.00029.wav"
+        }
+}
+```
+
 
 ### Dataset
 The selection criteria are as follows: if a dataset has 1) commercial music for retrieval, 2) publicly assessed (at least upon request) and 3) categorical single or multi-label annotations for supporting text-based retrieval scenarios. 
@@ -24,10 +71,6 @@ The selection criteria are as follows: if a dataset has 1) commercial music for 
 
 We summarize all the datasets and tasks in Table. MagnaTagATune (MTAT) consists of 25k music clips from 5,223 unique songs. Following a previous work, we use their published splits and top~50 tags. We do not compare result with previous works using different split. MTG-Jamendo (MTG) contains 55,094 full audio tracks with 183 tags about genre, instrument, and mood/theme. We use the official splits (split-0) in each category for tagging, genre, instrument, and mood/theme tasks. For single-label genre classification, we use the fault-filtered version of GTZAN (GZ) and the `small' version of Free Music Archive (FMA-Small). For the vocal attribute recognition task, we use K-pop Vocal Tag (KVT) dataset. It consists of 6,787 vocal segments from K-pop music tracks. All the segments are annotated with 42 semantic tags describing various vocal style including pitch range, timbre, playing techniques, and gender. For the categorical mood recognition task, we use Emotify dataset. It consists of 400 excerpts in 4 genres with 9 emotional categories.
 
-### Why we made this repo
-There are now too many datasets and too many data splits. Because of this, if you are using multi-datasets, creating a loader will cost you a lot of time. To solve this, we propose a preprocessor for making `KV Style (key-values) annotation` file, `track split` file, and `resampler`. This will help the re-implementation of the research.
-
-
 ### Re-implementation
 ```
 # download split and audio files
@@ -41,4 +84,13 @@ python main.py
 ### Dataset Request
 If you have difficulty accessing the dataset audio file, please contact- seungheondoh@kaist.ac.kr
 
-### Reference
+### Citation
+Please consider citing our paper in your publications if the project helps your research. BibTeX reference is as follow.
+```
+@inproceedings{toward2023doh,
+  title={Toward Universal Text-to-Music Retrieval},
+  author={SeungHeon Doh, Minz Won, Keunwoo Choi, Juhan Nam},
+  booktitle = {},
+  year={2023}
+}
+```
