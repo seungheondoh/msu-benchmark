@@ -146,8 +146,8 @@ def FMA_processor(fma_path):
     genres = fma_load(os.path.join(fma_path,"fma_metadata/genres.csv"))
     small_track_split, df_genre_top = get_track_split(tracks, "small")
     total_track = small_track_split['train_track'] + small_track_split['valid_track']+ small_track_split['test_track']
-    # pool = multiprocessing.Pool(multiprocessing.cpu_count())
-    # pool.map(fma_resampler, total_track)
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    pool.map(fma_resampler, total_track)
     error_samples = []
     error_dir = os.path.join(DATASET,'fma','error')
     for dirs in os.listdir(error_dir):
